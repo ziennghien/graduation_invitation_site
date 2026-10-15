@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ArrowLeft, ArrowRight, MapPinned, Navigation, Phone, Mail, CircleHelp, ExternalLink } from 'lucide-react';
-import coverImage from './assets/page1-cover.jpg';
+import coverImage from './assets/page1-cover.JPG';
 import campusMapImage from './assets/tdtu-campus-map.png';
 import './styles.css';
 import GraduationInvitation from "./GraduationInvitation";
