@@ -35,7 +35,20 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  if (code === ADMIN_CODE) return <Admin />;
+  if (ADMIN_CODE && code === ADMIN_CODE) return <Admin />;
+
+  // Không có mã hợp lệ (ví dụ mở từ thẻ xem trước trong ứng dụng chat) -> nhắc mở đúng link
+  if (!guest) {
+    return <main className="site-shell">
+      <div className="info-page" style={{ textAlign: 'center', minHeight: '70vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <div className="section-heading">
+          <p className="eyebrow">THÂN GỬI</p>
+          <h2>Bạn chưa mở đúng link rồi</h2>
+          <p>Vui lòng nhấn vào link Mỹ Duyên đã gửi (không phải phần xem trước) để xem được thiệp.</p>
+        </div>
+      </div>
+    </main>;
+  }
 
   return <main className="site-shell">
     <header className="topbar">

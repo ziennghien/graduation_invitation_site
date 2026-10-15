@@ -13,6 +13,7 @@ export const GUESTS = [
   { code: 'u7w9rp', name: 'Thanh Tâm', other: 'Ck', self: 'Vk' },
   { code: 'hkx5s4', name: 'Ngọc Hiền', other: 'Cậu', self: 'Tớ' },
   { code: 'fdkvfa', name: 'Thanh Tuấn', other: 'Anh', self: 'Em' },
+  { code: 'fdkvbc', name: 'Thành Đạt', other: 'Bạn', self: 'Mình' },
   { code: 'agv5ut', name: 'Minh Duy', other: 'Bạn', self: 'Mình' },
   { code: 'jr529r', name: 'Xuân Đào', other: 'Ck', self: 'Vk' },
   { code: 'ucsf8p', name: 'Thanh Phong', other: 'Bạn', self: 'Mình' },
