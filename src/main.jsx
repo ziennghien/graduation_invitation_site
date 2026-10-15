@@ -6,7 +6,7 @@ import campusMapImage from './assets/tdtu-campus-map.png';
 import './styles.css';
 import GraduationInvitation from "./GraduationInvitation";
 import Admin from "./Admin";
-import { ADMIN_CODE, findGuest } from "./guests";
+import { findGuest } from "./guests";
 
 const MAP_QUERY = 'Tượng đài Bác Tôn, Trường Đại học Tôn Đức Thắng, 19 Nguyễn Hữu Thọ, Tân Phong, Quận 7, Thành phố Hồ Chí Minh';
 const MAP_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(MAP_QUERY)}`;
@@ -17,9 +17,64 @@ const DISCOVERY_URL = 'https://discovery.tdtu.edu.vn/';
 const readCode = () => decodeURIComponent(window.location.hash.replace(/^#\/?/, '')).trim();
 const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 
+// Mật khẩu vào trang quản trị (khóa nhẹ phía trình duyệt, đổi tại đây)
+const ADMIN_PASSWORD = '01032020@Man';
+
+function WrongLink({ onAdmin }) {
+  const [showAdmin, setShowAdmin] = useState(false);
+  const [pw, setPw] = useState('');
+  const [error, setError] = useState(false);
+
+  const submit = (e) => {
+    e.preventDefault();
+    if (pw === ADMIN_PASSWORD) onAdmin();
+    else { setError(true); setPw(''); }
+  };
+
+  return <main className="site-shell">
+    <div className="info-page" style={{ textAlign: 'center', minHeight: '70vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+      <div className="section-heading">
+        <p className="eyebrow">THÂN GỬI</p>
+        <h2>Bạn vào nhầm rồi</h2>
+        <p>
+          Vui lòng nhấn vào <b style={{ color: '#d6303a' }}>dòng link</b> Mỹ Duyên đã gửi (phần màu đỏ),
+          {' '}không phải <b style={{ color: '#1d8fc9' }}>phần xem trước</b> (phần màu xanh) để xem được thiệp.
+        </p>
+      </div>
+
+      <div style={{ width: 'min(340px, 100%)', margin: '0 auto 28px', padding: 14, background: '#fffaf4', border: '1px solid var(--line)', borderRadius: 12, textAlign: 'left', fontSize: 12, lineHeight: 1.5 }}>
+        <div style={{ border: '2px solid #d6303a', borderRadius: 8, padding: '8px 10px', color: '#2f7fd1', wordBreak: 'break-all' }}>https://…vercel.app/#abc123</div>
+        <div style={{ color: '#d6303a', fontWeight: 700, margin: '4px 2px 8px' }}>✓ Bấm vào đây</div>
+        <div style={{ border: '2px solid #1d8fc9', borderRadius: 8, padding: '8px 10px' }}>
+          <div style={{ color: 'var(--muted)', fontSize: 11 }}>graduation-invitation-site.vercel.app</div>
+          <b>Thân gửi — Thiệp mời tốt nghiệp</b>
+        </div>
+        <div style={{ color: '#1d8fc9', fontWeight: 700, margin: '4px 2px 0' }}>✗ Không bấm ở đây</div>
+      </div>
+
+      {!showAdmin
+        ? <div><button className="outline-button" onClick={() => setShowAdmin(true)}>Tôi là admin</button></div>
+        : <form onSubmit={submit} style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <input
+              className="admin-search"
+              type="password"
+              value={pw}
+              onChange={(e) => { setPw(e.target.value); setError(false); }}
+              placeholder="Mật khẩu admin"
+              autoFocus
+              style={{ flex: '0 1 240px' }}
+            />
+            <button className="wine-button" type="submit">Vào trang quản trị</button>
+            {error && <p style={{ flexBasis: '100%', margin: 0, color: '#d6303a', fontSize: 12 }}>Mật khẩu chưa đúng.</p>}
+          </form>}
+    </div>
+  </main>;
+}
+
 function App() {
   const [page, setPage] = useState(1);
   const [code, setCode] = useState(readCode);
+  const [isAdmin, setIsAdmin] = useState(false);
   useEffect(() => {
     const onHash = () => setCode(readCode());
     window.addEventListener('hashchange', onHash);
@@ -35,20 +90,10 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  if (ADMIN_CODE && code === ADMIN_CODE) return <Admin />;
+  if (isAdmin) return <Admin />;
 
-  // Không có mã hợp lệ (ví dụ mở từ thẻ xem trước trong ứng dụng chat) -> nhắc mở đúng link
-  if (!guest) {
-    return <main className="site-shell">
-      <div className="info-page" style={{ textAlign: 'center', minHeight: '70vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-        <div className="section-heading">
-          <p className="eyebrow">THÂN GỬI</p>
-          <h2>Bạn chưa mở đúng link rồi</h2>
-          <p>Vui lòng nhấn vào link Mỹ Duyên đã gửi (không phải phần xem trước) để xem được thiệp.</p>
-        </div>
-      </div>
-    </main>;
-  }
+  // Không có mã hợp lệ (ví dụ mở từ thẻ xem trước trong ứng dụng chat)
+  if (!guest) return <WrongLink onAdmin={() => setIsAdmin(true)} />;
 
   return <main className="site-shell">
     <header className="topbar">
